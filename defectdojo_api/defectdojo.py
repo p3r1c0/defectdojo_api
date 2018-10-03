@@ -287,7 +287,7 @@ class DefectDojoAPI(object):
         return self._request('PUT', 'engagements/' + str(id) + '/', data=data)
 
     ###### Product API #######
-    def list_products(self, name=None, name_contains=None, limit=20):
+    def list_products(self, name=None, name_contains=None, limit=20, product_type=None):
         """Retrieves all the products.
 
         :param name: Search by product name.
@@ -305,6 +305,9 @@ class DefectDojoAPI(object):
 
         if name_contains:
             params['name__icontains'] = name_contains
+
+        if product_type:
+            params['prod_type'] = product_type
 
         return self._request('GET', 'products/', params)
 
@@ -383,7 +386,7 @@ class DefectDojoAPI(object):
         """
         return self._request('GET', 'tests/' + str(test_id) + '/')
 
-    def create_test(self, engagement_id, test_type, environment, target_start, target_end, percent_complete=None):
+    def create_test(self, engagement_id, test_type, environment, target_start, target_end, percent_complete=None, lead=None):
         """Creates a product with the given properties.
 
         :param engagement_id: Engagement id.
@@ -400,13 +403,14 @@ class DefectDojoAPI(object):
             'environment': environment,
             'target_start': target_start,
             'target_end': target_end,
-            'percent_complete': percent_complete
+            'percent_complete': percent_complete,
+            'lead': lead
         }
 
         return self._request('POST', 'tests/', data=data)
 
     def set_test(self, test_id, engagement_id=None, test_type=None, environment=None,
-        target_start=None, target_end=None, percent_complete=None):
+        target_start=None, target_end=None, percent_complete=None, lead=None):
         """Creates a product with the given properties.
 
         :param engagement_id: Engagement id.
@@ -436,6 +440,9 @@ class DefectDojoAPI(object):
 
         if percent_complete:
             data['percent_complete'] = percent_complete
+
+        if lead:
+            data['lead'] = lead
 
         return self._request('PUT', 'tests/' + str(test_id) + '/', data=data)
 
@@ -523,6 +530,92 @@ class DefectDojoAPI(object):
             params['build_id__contains'] = build
 
         return self._request('GET', 'findings/', params)
+
+
+    def list_finding_templates(self, active=None, duplicate=None, mitigated=None, severity=None, verified=None, severity_lt=None,
+        severity_gt=None, severity_contains=None, title_contains=None, url_contains=None, date_lt=None,
+        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=20):
+
+        """Returns filtered list of findings.
+
+        :param active: Finding is active: (true or false)
+        :param duplicate: Duplicate finding (true or false)
+        :param mitigated: Mitigated finding (true or false)
+        :param severity: Severity: Low, Medium, High and Critical.
+        :param verified: Finding verified.
+        :param severity_lt: Severity less than Low, Medium, High and Critical.
+        :param severity_gt: Severity greater than Low, Medium, High and Critical.
+        :param severity_contains: Severity contains: (Medium, Critical)
+        :param title_contains: Filter by title containing the keyword.
+        :param url_contains: Filter by URL containing the keyword.
+        :param date_lt: Date less than.
+        :param date_gt: Date greater than.
+        :param date: Return findings for a particular date.
+        :param product_id_in: Product id(s) associated with a finding. (1,2 or 1)
+        :param engagement_id_in: Engagement id(s) associated with a finding. (1,2 or 1)
+        :param test_in: Test id(s) associated with a finding. (1,2 or 1)
+        :param build_id: User specified build id relating to the build number from the build server. (Jenkins, Travis etc.).
+        :param limit: Number of records to return.
+
+        """
+
+        params = {}
+        if limit:
+            params['limit'] = limit
+
+        if active:
+            params['active'] = active
+
+        if duplicate:
+            params['duplicate'] = duplicate
+
+        if mitigated:
+            params['mitigated'] = mitigated
+
+        if severity:
+            params['severity__in'] = severity
+
+        if verified:
+            params['verified'] = verified
+
+        if severity_lt:
+            params['severity__lt'] = severity_lt
+
+        if severity_gt:
+            params['severity__gt'] = severity_gt
+
+        if severity_contains:
+            params['severity__contains'] = severity_contains
+
+        if title_contains:
+            params['title__contains'] = title_contains
+
+        if url_contains:
+            params['url__contains'] = url_contains
+
+        if date_lt:
+            params['date__lt'] = date_lt
+
+        if date_gt:
+            params['date__gt'] = date_gt
+
+        if date:
+            params['date'] = date
+
+        if engagement_id_in:
+            params['engagement__id__in'] = engagement_id_in
+
+        if product_id_in:
+            params['product__id__in'] = product_id_in
+
+        if test_id_in:
+            params['test__id__in'] = test_id_in
+
+        if build:
+            params['build_id__contains'] = build
+
+        return self._request('GET', 'finding_templates/', params)
+
 
     def get_finding(self, finding_id):
         """
@@ -702,7 +795,7 @@ class DefectDojoAPI(object):
             'scan_date': ('', scan_date),
             'tags': ('', tags),
             'build_id': ('', build),
-	    'minimum_severity': ('', minimum_severity)
+        'minimum_severity': ('', minimum_severity)
         }
 
         return self._request(
@@ -733,7 +826,7 @@ class DefectDojoAPI(object):
             'scan_date': ('', scan_date),
             'tags': ('', tags),
             'build_id': ('', build),
-	    'minimum_severity': ('', minimum_severity)
+        'minimum_severity': ('', minimum_severity)
         }
 
         return self._request(
