@@ -409,6 +409,13 @@ class DefectDojoAPI(object):
 
         return self._request('POST', 'tests/', data=data)
 
+    def create_test_type(self, name):
+        ''' Crea un test type '''
+        data = {
+            'name': name
+        }
+        return self._request('POST', 'test_type/add', data=data)
+
     def set_test(self, test_id, engagement_id=None, test_type=None, environment=None,
         target_start=None, target_end=None, percent_complete=None, lead=None):
         """Creates a product with the given properties.
@@ -751,6 +758,14 @@ class DefectDojoAPI(object):
             data['build_id'] = build
 
         return self._request('PUT', 'findings/' + str(finding_id) + '/', data=data)
+
+    def delete_finding(self, finding_id):
+        """
+        Deletes a finding using the given id.
+        :param finging_id: Language identification.
+        """
+        return self._request('DELETE', 'findings/' + str(finding_id) + '/')
+
 
     ##### Build Details API #####
 
