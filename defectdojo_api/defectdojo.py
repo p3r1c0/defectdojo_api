@@ -3,6 +3,7 @@ import requests
 import requests.exceptions
 import requests.packages.urllib3
 
+from datetime import datetime
 from . import __version__ as version
 
 
@@ -686,9 +687,9 @@ class DefectDojoAPI(object):
 
         return self._request('POST', 'findings/', data=data)
 
-    def set_finding(self, finding_id, product_id, engagement_id, test_id, title=None, description=None, severity=None,
-        cwe=None, date=None, user_id=None, impact=None, active=None, verified=None,
-        mitigation=None, references=None):
+    def set_finding(self, finding_id, product_id, engagement_id, test_id, last_reviewed=str(datetime.now()), title=None, description=None, severity=None,
+        cwe=None, date=None, user_id=None, impact=None, active=None, mitigated=None, verified=None,
+        mitigation=None, references=None, build=None):
 
         """Updates a finding with the given properties.
 
@@ -711,6 +712,9 @@ class DefectDojoAPI(object):
         """
 
         data = {}
+
+        if last_reviewed:
+            data['last_reviewed'] = last_reviewed
 
         if title:
             data['title'] = title
@@ -744,6 +748,9 @@ class DefectDojoAPI(object):
 
         if active:
             data['active'] = active
+
+        if mitigated:
+            data['mitigated'] = mitigated
 
         if verified:
             data['verified'] = verified
@@ -810,7 +817,7 @@ class DefectDojoAPI(object):
             'scan_date': ('', scan_date),
             'tags': ('', tags),
             'build_id': ('', build),
-        'minimum_severity': ('', minimum_severity)
+            'minimum_severity': ('', minimum_severity)
         }
 
         return self._request(
@@ -841,7 +848,7 @@ class DefectDojoAPI(object):
             'scan_date': ('', scan_date),
             'tags': ('', tags),
             'build_id': ('', build),
-        'minimum_severity': ('', minimum_severity)
+            'minimum_severity': ('', minimum_severity)
         }
 
         return self._request(
