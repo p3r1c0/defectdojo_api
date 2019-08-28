@@ -10,7 +10,7 @@ from . import __version__ as version
 class DefectDojoAPI(object):
     """An API wrapper for DefectDojo."""
 
-    def __init__(self, host, api_key, user, api_version='v1', verify_ssl=True, timeout=60, proxies=None, user_agent=None, cert=None, debug=False):
+    def __init__(self, host, api_key, user, api_version='v1', verify_ssl=True, timeout=60000, proxies=None, user_agent=None, cert=None, debug=False):
         """Initialize a DefectDojo API instance.
 
         :param host: The URL for the DefectDojo server. (e.g., http://localhost:8000/DefectDojo/)
@@ -105,7 +105,7 @@ class DefectDojoAPI(object):
 
 
     ###### User API #######
-    def list_users(self, username=None, limit=20):
+    def list_users(self, username=None, limit=10000):
         """Retrieves all the users.
 
         :param username: Search by username.
@@ -130,7 +130,7 @@ class DefectDojoAPI(object):
         return self._request('GET', 'users/' + str(user_id) + '/')
 
     ###### Engagements API #######
-    def list_engagements(self, status=None, product_in=None, name_contains=None,limit=20):
+    def list_engagements(self, status=None, product_in=None, name_contains=None,limit=10000000):
         """Retrieves all the engagements.
 
         :param product_in: List of product ids (1,2).
@@ -287,8 +287,15 @@ class DefectDojoAPI(object):
 
         return self._request('PUT', 'engagements/' + str(id) + '/', data=data)
 
+    def delete_engagement(self, engagement_id):
+        """
+        Deletes a finding using the given id.
+        :param finging_id: Language identification.
+        """
+        return self._request('DELETE', 'engagements/' + str(engagement_id) + '/')
+
     ###### Product API #######
-    def list_products(self, name=None, name_contains=None, limit=20, product_type=None):
+    def list_products(self, name=None, name_contains=None, limit=10000000, product_type=None):
         """Retrieves all the products.
 
         :param name: Search by product name.
@@ -362,7 +369,7 @@ class DefectDojoAPI(object):
 
 
     ###### Test API #######
-    def list_tests(self, name=None, engagement_in=None, limit=20):
+    def list_tests(self, name=None, engagement_in=None, limit=10000000):
         """Retrieves all the tests.
 
         :param name_contains: Search by product name.
@@ -454,10 +461,17 @@ class DefectDojoAPI(object):
 
         return self._request('PUT', 'tests/' + str(test_id) + '/', data=data)
 
+    def delete_test(self, test_id):
+        """
+        Deletes a finding using the given id.
+        :param finging_id: Language identification.
+        """
+        return self._request('DELETE', 'tests/' + str(test_id) + '/')
+
     ###### Findings API #######
     def list_findings(self, active=None, duplicate=None, mitigated=None, severity=None, verified=None, severity_lt=None,
         severity_gt=None, severity_contains=None, title_contains=None, url_contains=None, date_lt=None,
-        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=20):
+        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=10000000):
 
         """Returns filtered list of findings.
 
@@ -542,7 +556,7 @@ class DefectDojoAPI(object):
 
     def list_finding_templates(self, active=None, duplicate=None, mitigated=None, severity=None, verified=None, severity_lt=None,
         severity_gt=None, severity_contains=None, title_contains=None, url_contains=None, date_lt=None,
-        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=20):
+        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=10000000):
 
         """Returns filtered list of findings.
 
@@ -763,7 +777,7 @@ class DefectDojoAPI(object):
 
         if build:
             data['build_id'] = build
-            
+
         if false_p:
             data['false_p'] = false_p
 
@@ -861,7 +875,7 @@ class DefectDojoAPI(object):
 
     ##### Credential API #####
 
-    def list_credentials(self, name=None, username=None, limit=20):
+    def list_credentials(self, name=None, username=None, limit=10000000):
         """Retrieves all the globally configured credentials.
         :param name_contains: Search by credential name.
         :param username: Search by username
@@ -880,7 +894,7 @@ class DefectDojoAPI(object):
 
         return self._request('GET', 'credentials/', params)
 
-    def get_credential(self, cred_id, limit=20):
+    def get_credential(self, cred_id, limit=10000000):
         """
         Retrieves a credential using the given credential id.
         :param credential_id: Credential identification.
@@ -889,7 +903,7 @@ class DefectDojoAPI(object):
 
     ##### Credential Mapping API #####
 
-    def list_credential_mappings(self, name=None, product_id_in=None, engagement_id_in=None, test_id_in=None, finding_id_in=None, limit=20):
+    def list_credential_mappings(self, name=None, product_id_in=None, engagement_id_in=None, test_id_in=None, finding_id_in=None, limit=10000000):
         """Retrieves mapped credentials.
 
         :param name_contains: Search by credential name.
@@ -919,7 +933,7 @@ class DefectDojoAPI(object):
 
         return self._request('GET', 'credential_mappings/', params)
 
-    def get_credential_mapping(self, cred_mapping_id, limit=20):
+    def get_credential_mapping(self, cred_mapping_id, limit=10000000):
         """
         Retrieves a credential using the given credential id.
         :param cred_mapping_id: Credential identification.
@@ -927,7 +941,7 @@ class DefectDojoAPI(object):
         return self._request('GET', 'credential_mappings/' + str(cred_mapping_id) + '/')
 
     ##### App Analysis API #####
-    def list_app_analysis(self, id=None, product_id=None, name=None, limit=20):
+    def list_app_analysis(self, id=None, product_id=None, name=None, limit=10000000):
         """Retrieves source code languages.
 
         :param id: Search by lanaguage id.
@@ -990,7 +1004,7 @@ class DefectDojoAPI(object):
 
     ##### Language API #####
 
-    def list_languages(self, id=None, product_id=None, language_name=None, limit=20):
+    def list_languages(self, id=None, product_id=None, language_name=None, limit=10000000):
         """Retrieves source code languages.
 
         :param id: Search by lanaguage id.
@@ -1058,7 +1072,7 @@ class DefectDojoAPI(object):
             for language in languages.data["objects"]:
                 self.delete_language(self.get_id_from_url(language['resource_uri']))
 
-    def list_language_types(self, id=None, language_name=None, limit=20):
+    def list_language_types(self, id=None, language_name=None, limit=10000000):
         """Retrieves source code languages.
 
         :param id: Search by lanaguage id.
@@ -1081,7 +1095,7 @@ class DefectDojoAPI(object):
 
     ###### Tool API #######
 
-    def list_tool_types(self, resource_id=None, name=None, limit=20):
+    def list_tool_types(self, resource_id=None, name=None, limit=10000000):
         """Retrieves all the tool types.
 
         :param name_contains: Search by tool type name.
@@ -1101,7 +1115,7 @@ class DefectDojoAPI(object):
 
         return self._request('GET', 'tool_types/', params)
 
-    def list_tools(self, resource_id=None, name=None, tool_type_id=None, url=None, name_icontains=None, limit=20):
+    def list_tools(self, resource_id=None, name=None, tool_type_id=None, url=None, name_icontains=None, limit=10000000):
         """Retrieves all the tool configurations.
 
         :param name_contains: Search by tool name.
@@ -1133,7 +1147,7 @@ class DefectDojoAPI(object):
         return self._request('GET', 'tool_configurations/', params)
 
     def list_tool_products(self, resource_id=None, url=None, name=None, tool_configuration_id=None,
-        tool_project_id=None, product_id=None, limit=20):
+        tool_project_id=None, product_id=None, limit=10000000):
         """Retrieves all the tools.
 
         :param url_contains: Search by url.
