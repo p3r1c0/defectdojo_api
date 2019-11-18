@@ -704,7 +704,7 @@ class DefectDojoAPI(object):
 
     def set_finding(self, finding_id, product_id, engagement_id, test_id, last_reviewed=str(datetime.now()), title=None, description=None, severity=None,
         cwe=None, date=None, user_id=None, impact=None, active=None, mitigated=None, verified=None,
-        mitigation=None, references=None, build=None, false_p=None):
+        mitigation=None, references=None, build=None, false_p=None, severity_justification=None):
 
         """Updates a finding with the given properties.
 
@@ -781,6 +781,10 @@ class DefectDojoAPI(object):
 
         if false_p:
             data['false_p'] = false_p
+
+        if severity_justification:
+            data['severity_justification'] = severity_justification
+
 
         return self._request('PUT', 'findings/' + str(finding_id) + '/', data=data)
 
